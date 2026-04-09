@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Nossa História</title>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Outfit:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        /* DESIGN PREMIUM E GLASSMORPHISM */
+        :root {
+            --primary: #f0a8d0;
+            --primary-glow: #f0a8d080;
+            --secondary: #ffc4a3;
+            --bg-gradient-1: #0a0f18;
+            --bg-gradient-2: #162438;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-main: #f0f4f8;
+            --text-muted: #a0aec0;
+            --heart-color: #f0a8d0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: radial-gradient(circle at 50% 0%, var(--bg-gradient-2), var(--bg-gradient-1) 80%);
+            color: var(--text-main);
+            height: 100dvh;
+            /* Altura exata da viewport (lida bem com address bar do iOS) */
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow: hidden;
+            /* Impede QUALQUER scroll vertical */
+        }
+
+        /* Animação de Fundo */
+        .bg-fx {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .heart {
+            position: absolute;
+            bottom: -50px;
+            width: 14px;
+            height: 14px;
+            background: var(--heart-color);
+            transform: rotate(45deg);
+            opacity: 0;
+            animation: floatUp 15s linear infinite;
+            filter: blur(1px);
+        }
+
+        .heart::before,
+        .heart::after {
+            content: "";
+            position: absolute;
+            width: 14px;
+            height: 14px;
+            background: inherit;
+            border-radius: 50%;
+        }
+
+        .heart::before {
+            top: -7px;
+            left: 0;
+        }
+
+        .heart::after {
+            top: 0;
+            left: -7px;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) rotate(45deg) scale(0.6);
+                opacity: 0;
+            }
+
+            20% {
+                opacity: 0.3;
+                filter: drop-shadow(0 0 8px var(--heart-color));
+            }
+
+            80% {
+                opacity: 0.2;
+            }
+
+            100% {
+                transform: translateY(-110vh) rotate(45deg) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        /* Cabeçalho */
+        header {
+            text-align: center;
+            padding: 2.5vh 9px 1.5vh;
+            z-index: 1;
+            flex-shrink: 0;
+            width: 100%;
+        }
+
+        h1 {
+            font-family: 'Great Vibes', cursive;
+            font-size: clamp(2.5rem, 9vw, 4.5rem);
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            color: transparent;
+            padding: 0.2em 0.3em;
+            /* Impede o corte das pontinhas no iOS e laterais */
+            margin: 0;
+            line-height: 1.4;
+            text-shadow: 0 0 20px rgba(240, 168, 208, 0.4);
+        }
+
+        /* Ajuste do text-shadow para iPhone (bug Safari background-clip) */
+        @supports (-webkit-background-clip: text) {
+            h1 {
+                text-shadow: none;
+                filter: drop-shadow(0 0 8px rgba(240, 168, 208, 0.4));
+            }
+        }
+
+        p.subtitle {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(0.6rem, 2.5vw, 1rem);
+            font-weight: 300;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* Container Principal */
+        .gallery-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: min(2.5vw, 15px);
+            /* Gap flexível para caber */
+            width: 95%;
+            max-width: 1200px;
+            flex-grow: 1;
+            /* Preenche o meio da tela */
+            padding-bottom: 2vh;
+            z-index: 1;
+            min-height: 0;
+        }
+
+        /* Glassmorphism Cards */
+        .photo-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
+            padding: min(2vh, 12px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+            height: 100%;
+        }
+
+        /* Área da Imagem */
+        .img-container {
+            width: 100%;
+            height: 35%;
+            /* Altura fluída baseada no card */
+            min-height: 0;
+            border-radius: 12px;
+            overflow: hidden;
+            background-color: #111;
+            margin-bottom: min(1.5vh, 10px);
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            flex-shrink: 0;
+        }
+
+        .img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Textos dentro do Card */
+        .card-details {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            z-index: 1;
+            justify-content: center;
+            overflow: visible;
+        }
+
+        .card-title {
+            font-family: 'Great Vibes', cursive;
+            font-size: clamp(1.4rem, 4.5vh, 2.2rem);
+            color: #fff;
+            margin-bottom: min(1vh, 8px);
+            text-align: center;
+            font-weight: 400;
+            line-height: 1.4;
+            padding: 0.1em 0;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+            flex-shrink: 0;
+            overflow: visible;
+        }
+
+        /* Display do Timer */
+        .timer-display {
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 14px;
+            padding: min(1vh, 8px) 4px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            margin-top: auto;
+            position: relative;
+            flex-grow: 1;
+        }
+
+        .static-date {
+            font-size: clamp(0.5rem, 1.6vh, 0.75rem);
+            font-weight: 300;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: min(0.6vh, 5px);
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .days-big {
+            font-size: clamp(0.65rem, 1.8vh, 0.9rem);
+            font-weight: 300;
+            color: var(--text-main);
+            display: block;
+            line-height: 1.25;
+            flex-shrink: 0;
+        }
+
+        .days-big .hl {
+            font-weight: 600;
+            font-size: clamp(1.1rem, 3vh, 1.4rem);
+            color: var(--secondary);
+            margin: 0 1px;
+        }
+
+        /* Contêiner das Horas/Min/Sec */
+        .time-blocks {
+            display: flex;
+            justify-content: center;
+            gap: min(2vw, 6px);
+            flex-shrink: 0;
+            margin-top: min(1vh, 5px);
+        }
+
+        .time-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.05);
+            padding: min(0.8vh, 5px) min(1vw, 5px);
+            border-radius: 8px;
+            min-width: clamp(35px, 8vw, 50px);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            box-shadow: inset 0 1px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .t-num {
+            font-size: clamp(0.9rem, 2.5vh, 1.3rem);
+            font-weight: 600;
+            color: #fff;
+            line-height: 1.1;
+        }
+
+        .t-lbl {
+            font-size: clamp(0.4rem, 1.1vh, 0.5rem);
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            margin-top: 1px;
+        }
+
+        /* Desktop/Tablets largos */
+        @media (min-width: 900px) {
+            .gallery-container {
+                grid-template-columns: repeat(4, 1fr);
+                grid-template-rows: 1fr;
+                gap: 20px;
+                padding-bottom: 5vh;
+            }
+
+            .img-container {
+                height: 40%;
+                margin-bottom: 15px;
+            }
+
+            .timer-display {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="bg-fx" id="heartContainer"></div>
+
+    <header>
+        <h1>Nossa Jornada</h1>
+        <p class="subtitle">Eternizando Momentos</p>
+    </header>
+
+    <div class="gallery-container">
+
+        <div class="photo-card">
+            <div class="img-container">
+                <img src="foto1.png" alt="Dia que nos conhecemos">
+            </div>
+            <div class="card-details">
+                <div class="card-title">Quando nos vimos</div>
+                <div id="timer-met" class="timer-display">...</div>
+            </div>
+        </div>
+
+        <div class="photo-card">
+            <div class="img-container">
+                <img src="foto2.png" alt="Primeiro Beijo">
+            </div>
+            <div class="card-details">
+                <div class="card-title">Primeiro Beijo</div>
+                <div id="timer-kiss" class="timer-display">...</div>
+            </div>
+        </div>
+
+        <div class="photo-card">
+            <div class="img-container">
+                <img src="foto3.png" alt="Eu te amo">
+            </div>
+            <div class="card-details">
+                <div class="card-title">Primeiro "Eu te amo"</div>
+                <div id="timer-love" class="timer-display">...</div>
+            </div>
+        </div>
+
+        <div class="photo-card">
+            <div class="img-container">
+                <img src="foto4.png" alt="O Pedido">
+            </div>
+            <div class="card-details">
+                <div class="card-title">O Pedido</div>
+                <div id="timer-dating" class="timer-display">...</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const dates = {
+            met: new Date(2025, 8, 11, 18, 0),
+            kiss: new Date(2025, 9, 18, 23, 30),
+            love: new Date(2025, 10, 20, 0, 30),
+            dating: new Date(2025, 11, 7, 16, 55)
+        };
+
+        function updateTimer(startDate, elementId) {
+            const now = new Date();
+            let diff = now.getTime() - startDate.getTime();
+            const element = document.getElementById(elementId);
+
+            if (diff < 0) {
+                element.innerHTML = "<div style='text-align: center; padding: 20px; color: var(--text-muted); font-size: 0.8rem;'>Aguardando esse dia chegar...</div>";
+                return;
+            }
+
+            let m = 0;
+            let startCopy = new Date(startDate.getTime());
+
+            while (true) {
+                let temp = new Date(startCopy.getTime());
+                temp.setMonth(temp.getMonth() + 1);
+                if (temp.getTime() <= now.getTime()) {
+                    m++;
+                    startCopy = temp;
+                } else {
+                    break;
+                }
+            }
+
+            let remMs = now.getTime() - startCopy.getTime();
+            const daysCount = Math.floor(remMs / (1000 * 60 * 60 * 24));
+
+            const hours = Math.floor((remMs / (1000 * 60 * 60)) % 24);
+            const minutes = Math.floor((remMs / (1000 * 60)) % 60);
+            const seconds = Math.floor((remMs / 1000) % 60);
+
+            let w = Math.floor(daysCount / 7);
+            let d = daysCount % 7;
+
+            let timeString = [];
+            if (m > 0) timeString.push(`<span class="hl">${m}</span> ${m === 1 ? 'mês' : 'meses'}`);
+            if (w > 0) timeString.push(`<span class="hl">${w}</span> ${w === 1 ? 'sem.' : 'semanas'}`);
+            if (d > 0 || (m === 0 && w === 0)) timeString.push(`<span class="hl">${d}</span> ${d === 1 ? 'dia' : 'dias'}`);
+
+            let joinedText = "";
+            if (timeString.length === 1) {
+                joinedText = timeString[0];
+            } else if (timeString.length === 2) {
+                joinedText = timeString[0] + " e " + timeString[1];
+            } else {
+                joinedText = timeString[0] + ", " + timeString[1] + " e " + timeString[2];
+            }
+
+            const dateString = startDate.toLocaleDateString('pt-BR', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric'
+            });
+
+            const hFmt = hours.toString().padStart(2, '0');
+            const mFmt = minutes.toString().padStart(2, '0');
+            const sFmt = seconds.toString().padStart(2, '0');
+
+            element.innerHTML = `
+                <div class="static-date">${dateString}</div>
+                <div class="days-big">${joinedText}</div>
+                <div class="time-blocks">
+                    <div class="time-box">
+                        <span class="t-num">${hFmt}</span>
+                        <span class="t-lbl">Horas</span>
+                    </div>
+                    <div class="time-box">
+                        <span class="t-num">${mFmt}</span>
+                        <span class="t-lbl">Min</span>
+                    </div>
+                    <div class="time-box">
+                        <span class="t-num">${sFmt}</span>
+                        <span class="t-lbl">Seg</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function startLoops() {
+            setInterval(() => {
+                updateTimer(dates.met, 'timer-met');
+                updateTimer(dates.kiss, 'timer-kiss');
+                updateTimer(dates.love, 'timer-love');
+                updateTimer(dates.dating, 'timer-dating');
+            }, 1000);
+
+            createHearts();
+        }
+
+        function createHearts() {
+            const container = document.getElementById('heartContainer');
+            const heartCount = 15;
+            for (let i = 0; i < heartCount; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = (Math.random() * 4 + 10) + 's';
+                heart.style.animationDelay = (Math.random() * 4) + 's';
+                container.appendChild(heart);
+            }
+        }
+
+        updateTimer(dates.met, 'timer-met');
+        updateTimer(dates.kiss, 'timer-kiss');
+        updateTimer(dates.love, 'timer-love');
+        updateTimer(dates.dating, 'timer-dating');
+        startLoops();
+    </script>
+</body>
+
+</html>
